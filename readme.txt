@@ -1,8 +1,8 @@
 === Admin Image Preview ===
 Contributors: otisferu
-Tags: image, preview, tooltip, admin, acf, media library, featured image, gallery
+Tags: image, preview, admin, acf, media-library
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 6.9
 Requires PHP: 7.0
 Stable tag: 1.0.0
 License: GPLv3 or later
