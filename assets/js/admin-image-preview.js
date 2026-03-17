@@ -175,32 +175,33 @@
 	 * Handle mouseover event.
 	 */
 	function handleMouseOver(e) {
-		var img = e.target;
+		var target = e.target;
+		var img = null;
 
-		console.log('AIP: mouseover on', img.tagName, img);
+		// If target is an IMG, use it directly
+		if (target.tagName === 'IMG') {
+			img = target;
+		} else {
+			// Otherwise, look for an IMG inside common containers
+			var container = target.closest('.thumbnail') ||
+			                target.closest('.attachment-preview') ||
+			                target.closest('.acf-gallery-attachment') ||
+			                target.closest('.acf-image-uploader') ||
+			                target.closest('#postimagediv');
+			if (container) {
+				img = container.querySelector('img');
+			}
+		}
 
-		if (img.tagName !== 'IMG') return;
+		if (!img) return;
 
-		console.log('AIP: IMG detected');
+		console.log('AIP: IMG found', img);
 
 		// Prevent re-triggering if already showing for this image
 		if (img === currentImage) return;
 		currentImage = img;
 
-		// Check if image is in a supported context
-		var isAcfGallery = img.closest('.acf-gallery-attachment');
-		var isAcfImage = img.closest('.acf-image-uploader');
-		var isFeaturedImage = img.closest('#postimagediv');
-		var isMediaLibrary = img.closest('.attachment-preview') || img.closest('.thumbnail') || img.closest('.attachment');
-
-		console.log('AIP: contexts', { isAcfGallery: !!isAcfGallery, isAcfImage: !!isAcfImage, isFeaturedImage: !!isFeaturedImage, isMediaLibrary: !!isMediaLibrary });
-
-		if (!isAcfGallery && !isAcfImage && !isFeaturedImage && !isMediaLibrary) {
-			console.log('AIP: no valid context, returning');
-			return;
-		}
-
-		console.log('AIP: valid context found');
+		console.log('AIP: processing image');
 
 		if (hideTimeout) {
 			clearTimeout(hideTimeout);
@@ -233,8 +234,16 @@
 	 * Handle mouseout event.
 	 */
 	function handleMouseOut(e) {
-		var img = e.target;
-		if (img.tagName !== 'IMG') return;
+		var target = e.target;
+
+		// Check if leaving a relevant container
+		var container = target.closest('.thumbnail') ||
+		                target.closest('.attachment-preview') ||
+		                target.closest('.acf-gallery-attachment') ||
+		                target.closest('.acf-image-uploader') ||
+		                target.closest('#postimagediv');
+
+		if (!container && target.tagName !== 'IMG') return;
 
 		currentImage = null;
 		hideTimeout = setTimeout(function () {
