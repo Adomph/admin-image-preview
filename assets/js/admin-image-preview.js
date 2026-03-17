@@ -178,45 +178,35 @@
 		var target = e.target;
 		var img = null;
 
-		// If target is an IMG, use it directly
+		// Find img: either target is img, or find img inside target, or find img in parent
 		if (target.tagName === 'IMG') {
 			img = target;
 		} else {
-			// Otherwise, look for an IMG inside common containers
-			var container = target.closest('.thumbnail') ||
-			                target.closest('.attachment-preview') ||
-			                target.closest('.acf-gallery-attachment') ||
-			                target.closest('.acf-image-uploader') ||
-			                target.closest('#postimagediv');
-			if (container) {
-				img = container.querySelector('img');
+			img = target.querySelector('img');
+			if (!img) {
+				var parent = target.parentElement;
+				if (parent) {
+					img = parent.querySelector('img');
+				}
 			}
 		}
 
 		if (!img) return;
 
-		console.log('AIP: IMG found', img);
-
 		// Prevent re-triggering if already showing for this image
 		if (img === currentImage) return;
-		currentImage = img;
 
-		console.log('AIP: processing image');
+		// Get attachment ID by going up the DOM
+		var attachmentId = getAttachmentId(img);
+		if (!attachmentId) return;
+
+		currentImage = img;
 
 		if (hideTimeout) {
 			clearTimeout(hideTimeout);
 			hideTimeout = null;
 		}
 
-		var attachmentId = getAttachmentId(img);
-		console.log('AIP: attachmentId', attachmentId);
-
-		if (!attachmentId) {
-			console.log('AIP: no attachmentId, returning');
-			return;
-		}
-
-		console.log('AIP: loading image info for', attachmentId);
 		createTooltip();
 		loadImageInfo(attachmentId, e);
 	}
@@ -234,21 +224,10 @@
 	 * Handle mouseout event.
 	 */
 	function handleMouseOut(e) {
-		var target = e.target;
-
-		// Check if leaving a relevant container
-		var container = target.closest('.thumbnail') ||
-		                target.closest('.attachment-preview') ||
-		                target.closest('.acf-gallery-attachment') ||
-		                target.closest('.acf-image-uploader') ||
-		                target.closest('#postimagediv');
-
-		if (!container && target.tagName !== 'IMG') return;
-
-		currentImage = null;
 		hideTimeout = setTimeout(function () {
+			currentImage = null;
 			hideTooltip();
-		}, 100);
+		}, 150);
 	}
 
 	/**
