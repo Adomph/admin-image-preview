@@ -146,9 +146,9 @@
 		currentRequest.open('POST', aipData.ajaxUrl, true);
 
 		currentRequest.onload = function () {
-			if (currentRequest.status === 200) {
+			if (this.status === 200) {
 				try {
-					var response = JSON.parse(currentRequest.responseText);
+					var response = JSON.parse(this.responseText);
 					if (response.success && response.data) {
 						cache[attachmentId] = response.data;
 						showTooltip(response.data, e);
