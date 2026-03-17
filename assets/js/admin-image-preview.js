@@ -5,6 +5,7 @@
 	var cache = {};
 	var currentRequest = null;
 	var hideTimeout = null;
+	var currentImage = null;
 
 	/**
 	 * Create the tooltip element.
@@ -171,11 +172,15 @@
 	}
 
 	/**
-	 * Handle mouseenter event.
+	 * Handle mouseover event.
 	 */
-	function handleMouseEnter(e) {
+	function handleMouseOver(e) {
 		var img = e.target;
 		if (img.tagName !== 'IMG') return;
+
+		// Prevent re-triggering if already showing for this image
+		if (img === currentImage) return;
+		currentImage = img;
 
 		// Check if image is in a supported context
 		var isAcfGallery = img.closest('.acf-gallery-attachment');
@@ -209,12 +214,13 @@
 	}
 
 	/**
-	 * Handle mouseleave event.
+	 * Handle mouseout event.
 	 */
-	function handleMouseLeave(e) {
+	function handleMouseOut(e) {
 		var img = e.target;
 		if (img.tagName !== 'IMG') return;
 
+		currentImage = null;
 		hideTimeout = setTimeout(function () {
 			hideTooltip();
 		}, 100);
@@ -224,9 +230,9 @@
 	 * Initialize event listeners.
 	 */
 	function init() {
-		document.body.addEventListener('mouseenter', handleMouseEnter, true);
-		document.body.addEventListener('mousemove', handleMouseMove, true);
-		document.body.addEventListener('mouseleave', handleMouseLeave, true);
+		document.addEventListener('mouseover', handleMouseOver);
+		document.addEventListener('mousemove', handleMouseMove);
+		document.addEventListener('mouseout', handleMouseOut);
 	}
 
 	// Wait for DOM ready
