@@ -171,9 +171,9 @@
 	}
 
 	/**
-	 * Handle mouseenter event.
+	 * Handle mouseover event.
 	 */
-	function handleMouseEnter(e) {
+	function handleMouseOver(e) {
 		var img = e.target;
 
 		// If not an IMG, try to find one inside (for Media Library)
@@ -216,9 +216,9 @@
 	 * Initialize event listeners.
 	 */
 	function init() {
-		document.body.addEventListener('mouseenter', handleMouseEnter, true);
-		document.body.addEventListener('mousemove', handleMouseMove, true);
-		document.body.addEventListener('mouseleave', handleMouseLeave, true);
+		document.body.addEventListener('mouseover', handleMouseOver);
+		document.body.addEventListener('mousemove', handleMouseMove);
+		document.body.addEventListener('mouseout', handleMouseLeave);
 	}
 
 	// Wait for DOM ready
