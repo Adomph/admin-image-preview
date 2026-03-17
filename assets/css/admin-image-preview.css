@@ -1,0 +1,75 @@
+/**
+ * Admin Image Preview - Styles
+ */
+
+.aip-tooltip {
+	position: fixed;
+	z-index: 999999;
+	background: #1d2327;
+	border-radius: 4px;
+	padding: 10px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+	opacity: 0;
+	transform: translateY(5px);
+	transition: opacity 0.2s ease, transform 0.2s ease;
+	max-width: 350px;
+}
+
+.aip-tooltip.aip-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.aip-tooltip__image {
+	display: block;
+	max-width: 100%;
+	max-height: 250px;
+	width: auto;
+	height: auto;
+	border-radius: 2px;
+	margin-bottom: 8px;
+}
+
+.aip-tooltip__info {
+	color: #fff;
+	font-size: 11px;
+	line-height: 1.5;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.aip-tooltip__row {
+	display: flex;
+	justify-content: space-between;
+	gap: 15px;
+}
+
+.aip-tooltip__label {
+	color: #a7aaad;
+}
+
+.aip-tooltip__value {
+	color: #fff;
+	font-weight: 500;
+}
+
+.aip-tooltip__filename {
+	color: #72aee6;
+	word-break: break-all;
+	margin-bottom: 4px;
+}
+
+.aip-tooltip__loading {
+	color: #a7aaad;
+	font-size: 11px;
+	padding: 20px;
+	text-align: center;
+}
+
+/* Visual indicator on target images */
+.acf-gallery .acf-gallery-attachment img,
+.acf-image-uploader .image-wrap img,
+#postimagediv .inside img,
+.attachment-preview .thumbnail img {
+	cursor: zoom-in;
+}
