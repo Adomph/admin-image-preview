@@ -181,11 +181,9 @@
 		var isAcfGallery = img.closest('.acf-gallery-attachment');
 		var isAcfImage = img.closest('.acf-image-uploader');
 		var isFeaturedImage = img.closest('#postimagediv');
-		var isMediaLibrary = img.closest('.attachment-preview');
-		var isMediaModal = img.closest('.media-modal .attachment');
-		var isMediaGrid = img.closest('.wp-list-table .column-title') || img.closest('.attachments-browser');
+		var isMediaLibrary = img.closest('.attachment-preview') || img.closest('.thumbnail') || img.closest('.attachment');
 
-		if (!isAcfGallery && !isAcfImage && !isFeaturedImage && !isMediaLibrary && !isMediaModal && !isMediaGrid) {
+		if (!isAcfGallery && !isAcfImage && !isFeaturedImage && !isMediaLibrary) {
 			return;
 		}
 
