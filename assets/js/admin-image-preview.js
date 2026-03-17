@@ -176,7 +176,12 @@
 	 */
 	function handleMouseOver(e) {
 		var img = e.target;
+
+		console.log('AIP: mouseover on', img.tagName, img);
+
 		if (img.tagName !== 'IMG') return;
+
+		console.log('AIP: IMG detected');
 
 		// Prevent re-triggering if already showing for this image
 		if (img === currentImage) return;
@@ -188,9 +193,14 @@
 		var isFeaturedImage = img.closest('#postimagediv');
 		var isMediaLibrary = img.closest('.attachment-preview') || img.closest('.thumbnail') || img.closest('.attachment');
 
+		console.log('AIP: contexts', { isAcfGallery: !!isAcfGallery, isAcfImage: !!isAcfImage, isFeaturedImage: !!isFeaturedImage, isMediaLibrary: !!isMediaLibrary });
+
 		if (!isAcfGallery && !isAcfImage && !isFeaturedImage && !isMediaLibrary) {
+			console.log('AIP: no valid context, returning');
 			return;
 		}
+
+		console.log('AIP: valid context found');
 
 		if (hideTimeout) {
 			clearTimeout(hideTimeout);
@@ -198,8 +208,14 @@
 		}
 
 		var attachmentId = getAttachmentId(img);
-		if (!attachmentId) return;
+		console.log('AIP: attachmentId', attachmentId);
 
+		if (!attachmentId) {
+			console.log('AIP: no attachmentId, returning');
+			return;
+		}
+
+		console.log('AIP: loading image info for', attachmentId);
 		createTooltip();
 		loadImageInfo(attachmentId, e);
 	}
