@@ -5,7 +5,6 @@
 	var cache = {};
 	var currentRequest = null;
 	var hideTimeout = null;
-	var currentImage = null;
 
 	/**
 	 * Create the tooltip element.
@@ -172,40 +171,24 @@
 	}
 
 	/**
-	 * Handle mouseover event.
+	 * Handle mouseenter event.
 	 */
-	function handleMouseOver(e) {
-		var target = e.target;
-		var img = null;
+	function handleMouseEnter(e) {
+		var img = e.target;
 
-		// Find img: either target is img, or find img inside target, or find img in parent
-		if (target.tagName === 'IMG') {
-			img = target;
-		} else {
-			img = target.querySelector('img');
-			if (!img) {
-				var parent = target.parentElement;
-				if (parent) {
-					img = parent.querySelector('img');
-				}
-			}
+		// If not an IMG, try to find one inside (for Media Library)
+		if (img.tagName !== 'IMG') {
+			img = e.target.querySelector('img');
+			if (!img) return;
 		}
-
-		if (!img) return;
-
-		// Prevent re-triggering if already showing for this image
-		if (img === currentImage) return;
-
-		// Get attachment ID by going up the DOM
-		var attachmentId = getAttachmentId(img);
-		if (!attachmentId) return;
-
-		currentImage = img;
 
 		if (hideTimeout) {
 			clearTimeout(hideTimeout);
 			hideTimeout = null;
 		}
+
+		var attachmentId = getAttachmentId(img);
+		if (!attachmentId) return;
 
 		createTooltip();
 		loadImageInfo(attachmentId, e);
@@ -221,22 +204,21 @@
 	}
 
 	/**
-	 * Handle mouseout event.
+	 * Handle mouseleave event.
 	 */
-	function handleMouseOut(e) {
+	function handleMouseLeave(e) {
 		hideTimeout = setTimeout(function () {
-			currentImage = null;
 			hideTooltip();
-		}, 150);
+		}, 100);
 	}
 
 	/**
 	 * Initialize event listeners.
 	 */
 	function init() {
-		document.addEventListener('mouseover', handleMouseOver);
-		document.addEventListener('mousemove', handleMouseMove);
-		document.addEventListener('mouseout', handleMouseOut);
+		document.body.addEventListener('mouseenter', handleMouseEnter, true);
+		document.body.addEventListener('mousemove', handleMouseMove, true);
+		document.body.addEventListener('mouseleave', handleMouseLeave, true);
 	}
 
 	// Wait for DOM ready
