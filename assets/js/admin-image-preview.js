@@ -5,6 +5,7 @@
 	var cache = {};
 	var currentRequest = null;
 	var hideTimeout = null;
+	var currentAttachmentId = null;
 
 	/**
 	 * Create the tooltip element.
@@ -146,6 +147,12 @@
 		currentRequest.open('POST', aipData.ajaxUrl, true);
 
 		currentRequest.onload = function () {
+			// Check if still the same image
+			if (attachmentId !== currentAttachmentId) {
+				currentRequest = null;
+				return;
+			}
+
 			if (this.status === 200) {
 				try {
 					var response = JSON.parse(this.responseText);
@@ -190,6 +197,16 @@
 		var attachmentId = getAttachmentId(img);
 		if (!attachmentId) return;
 
+		// Same image, no need to reload
+		if (attachmentId === currentAttachmentId) return;
+
+		// Cancel previous request if any
+		if (currentRequest) {
+			currentRequest.abort();
+			currentRequest = null;
+		}
+
+		currentAttachmentId = attachmentId;
 		createTooltip();
 		loadImageInfo(attachmentId, e);
 	}
@@ -208,6 +225,7 @@
 	 */
 	function handleMouseLeave(e) {
 		hideTimeout = setTimeout(function () {
+			currentAttachmentId = null;
 			hideTooltip();
 		}, 100);
 	}
