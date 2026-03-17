@@ -141,17 +141,21 @@ class Admin_Image_Preview {
 			wp_send_json_error( 'Invalid ID' );
 		}
 
-		$full_src  = wp_get_attachment_image_src( $attachment_id, 'full' );
-		$file_path = get_attached_file( $attachment_id );
-		$file_size = $file_path && file_exists( $file_path ) ? filesize( $file_path ) : 0;
+		$full_src        = wp_get_attachment_image_src( $attachment_id, 'full' );
+		$medium_large    = wp_get_attachment_image_src( $attachment_id, 'medium_large' );
+		$file_path       = get_attached_file( $attachment_id );
+		$file_size       = $file_path && file_exists( $file_path ) ? filesize( $file_path ) : 0;
 
 		if ( ! $full_src ) {
 			wp_send_json_error( 'Image not found' );
 		}
 
+		// Use medium_large for preview, full dimensions for info.
+		$preview_src = $medium_large ? $medium_large[0] : $full_src[0];
+
 		wp_send_json_success(
 			array(
-				'url'      => $full_src[0],
+				'url'      => $preview_src,
 				'width'    => $full_src[1],
 				'height'   => $full_src[2],
 				'filesize' => $file_size ? size_format( $file_size ) : '',
