@@ -48,10 +48,28 @@
 			}
 		}
 
-		// Media Library: data-id on .attachment
+		// Media Library Grid: data-id on .attachment
 		var attachment = img.closest('.attachment');
 		if (attachment && attachment.dataset.id) {
 			return attachment.dataset.id;
+		}
+
+		// Media Library Modal: look for aria-label or data attributes
+		var attachmentPreview = img.closest('.attachment-preview');
+		if (attachmentPreview) {
+			var parentLi = attachmentPreview.closest('li[data-id]');
+			if (parentLi && parentLi.dataset.id) {
+				return parentLi.dataset.id;
+			}
+		}
+
+		// Media Modal Selection: check for selected attachment
+		var mediaModal = img.closest('.media-modal');
+		if (mediaModal) {
+			var selectedAttachment = img.closest('[data-id]');
+			if (selectedAttachment && selectedAttachment.dataset.id) {
+				return selectedAttachment.dataset.id;
+			}
 		}
 
 		return null;
@@ -177,13 +195,15 @@
 		var img = e.target;
 		if (img.tagName !== 'IMG') return;
 
-		// Check if image is in ACF or Featured Image context
+		// Check if image is in a supported context
 		var isAcfGallery = img.closest('.acf-gallery-attachment');
 		var isAcfImage = img.closest('.acf-image-uploader');
 		var isFeaturedImage = img.closest('#postimagediv');
 		var isMediaLibrary = img.closest('.attachment-preview');
+		var isMediaModal = img.closest('.media-modal .attachment');
+		var isMediaGrid = img.closest('.wp-list-table .column-title') || img.closest('.attachments-browser');
 
-		if (!isAcfGallery && !isAcfImage && !isFeaturedImage && !isMediaLibrary) {
+		if (!isAcfGallery && !isAcfImage && !isFeaturedImage && !isMediaLibrary && !isMediaModal && !isMediaGrid) {
 			return;
 		}
 
