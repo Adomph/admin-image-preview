@@ -24,10 +24,16 @@
 	 * Get the attachment ID from an image element.
 	 */
 	function getAttachmentId(img) {
-		// ACF Gallery: data-id on parent .acf-gallery-attachment
-		var galleryAttachment = img.closest('.acf-gallery-attachment');
-		if (galleryAttachment && galleryAttachment.dataset.id) {
-			return galleryAttachment.dataset.id;
+		// First: try to find data-id on closest li
+		var closestLi = img.closest('li[data-id]');
+		if (closestLi && closestLi.dataset.id) {
+			return closestLi.dataset.id;
+		}
+
+		// Second: try to find data-id on any parent element
+		var closestDataId = img.closest('[data-id]');
+		if (closestDataId && closestDataId.dataset.id) {
+			return closestDataId.dataset.id;
 		}
 
 		// ACF Image: hidden input with value
@@ -45,30 +51,6 @@
 			var postThumbnailId = document.getElementById('_thumbnail_id');
 			if (postThumbnailId && postThumbnailId.value) {
 				return postThumbnailId.value;
-			}
-		}
-
-		// Media Library Grid: data-id on .attachment
-		var attachment = img.closest('.attachment');
-		if (attachment && attachment.dataset.id) {
-			return attachment.dataset.id;
-		}
-
-		// Media Library Modal: look for aria-label or data attributes
-		var attachmentPreview = img.closest('.attachment-preview');
-		if (attachmentPreview) {
-			var parentLi = attachmentPreview.closest('li[data-id]');
-			if (parentLi && parentLi.dataset.id) {
-				return parentLi.dataset.id;
-			}
-		}
-
-		// Media Modal Selection: check for selected attachment
-		var mediaModal = img.closest('.media-modal');
-		if (mediaModal) {
-			var selectedAttachment = img.closest('[data-id]');
-			if (selectedAttachment && selectedAttachment.dataset.id) {
-				return selectedAttachment.dataset.id;
 			}
 		}
 
